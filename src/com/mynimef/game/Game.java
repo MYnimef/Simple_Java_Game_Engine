@@ -1,5 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics;
+package com.mynimef.game;
+
+import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -14,8 +15,7 @@ public class Game extends JFrame implements Runnable{
     private final int WIDTH = 1280;
     private final int HEIGHT = 720;
 
-    private boolean running = true;
-    private BufferedImage image;
+    private final BufferedImage image;
     public int[] pixels;
     public ArrayList<Texture> textures;
     public Camera camera;
@@ -23,24 +23,24 @@ public class Game extends JFrame implements Runnable{
 
     public int mapWidth = 15;
     public int mapHeight = 15;
-    public static int[][] map =
-            {
-                    {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
-                    {1,0,0,0,0,0,0,0,2,0,0,0,0,0,2},
-                    {1,0,3,3,3,3,3,0,0,0,0,0,0,0,2},
-                    {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
-                    {1,0,3,0,0,0,3,0,2,2,2,0,2,2,2},
-                    {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
-                    {1,0,3,3,0,3,3,0,2,0,0,0,0,0,2},
-                    {1,0,0,0,0,0,0,0,2,0,0,0,0,0,2},
-                    {1,1,1,1,1,1,1,1,4,4,4,0,4,4,4},
-                    {1,0,0,0,0,0,1,4,0,0,0,0,0,0,4},
-                    {1,0,0,0,0,0,1,4,0,0,0,0,0,0,4},
-                    {1,0,0,0,0,0,1,4,0,3,3,3,3,0,4},
-                    {1,0,0,0,0,0,1,4,0,3,3,3,3,0,4},
-                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
-                    {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
-            };
+    public static int[][] map = {
+            {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
+            {1,0,0,0,0,0,0,0,2,0,0,0,0,0,2},
+            {1,0,3,3,3,3,3,0,0,0,0,0,0,0,2},
+            {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
+            {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
+            {1,0,3,0,0,0,3,0,2,2,2,0,2,2,2},
+            {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
+            {1,0,3,3,0,3,3,0,2,0,0,0,0,0,2},
+            {1,0,0,0,0,0,0,0,2,0,0,0,0,0,2},
+            {1,1,1,1,1,1,1,1,4,4,4,0,4,4,4},
+            {1,0,0,0,0,0,1,4,0,0,0,0,0,0,4},
+            {1,0,0,0,0,0,1,4,0,0,0,0,0,0,4},
+            {1,0,0,0,0,0,1,4,0,3,3,3,3,0,4},
+            {1,0,0,0,0,0,1,4,0,3,3,3,3,0,4},
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
+            {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
+    };
 
     public Game() {
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -65,6 +65,14 @@ public class Game extends JFrame implements Runnable{
         setBackground(Color.black);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        // Transparent 16 x 16 pixel cursor image.
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        // Create a new blank cursor.
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                cursorImg, new Point(0, 0), "blank cursor");
+        // Set the blank cursor to the JFrame.
+        getContentPane().setCursor(blankCursor);
     }
 
     public void render() {
@@ -80,10 +88,11 @@ public class Game extends JFrame implements Runnable{
 
     public void run() {
         long lastTime = System.nanoTime();
-        final double ns = 1000000000.0 / 60.0;//60 times per second
+        final double ns = 1000000000.0 / 60.0; //60 times per second
         double delta = 0;
         requestFocus();
-        while(running) {
+
+        while(true) {
             long now = System.nanoTime();
             delta = delta + ((now - lastTime) / ns);
             lastTime = now;
