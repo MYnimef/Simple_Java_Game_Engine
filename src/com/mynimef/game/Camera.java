@@ -16,6 +16,9 @@ public class Camera implements KeyListener, MouseMotionListener {
     private Robot robot;
     private boolean pause = false;
 
+    private final double xCenter;
+    private final double yCenter;
+
     public Camera(double x, double y, double xd, double yd, double xp, double yp) {
         xPos = x;
         yPos = y;
@@ -34,6 +37,10 @@ public class Camera implements KeyListener, MouseMotionListener {
         } catch (AWTException e) {
             e.printStackTrace();
         }
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        xCenter = screenSize.getWidth() / 2;
+        yCenter = screenSize.getHeight() / 2;
     }
 
     @Override
@@ -88,20 +95,20 @@ public class Camera implements KeyListener, MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         if (!pause) {
             int posX = e.getXOnScreen();
-            if (posX > 2560 / 2) {
+            if (posX > xCenter) {
                 turnRight = true;
-            } else if (posX < 2560 / 2) {
+            } else if (posX < xCenter) {
                 turnLeft = true;
             }
 
             int posY = e.getYOnScreen();
-            if (posY > 1080 / 2) {
+            if (posY > yCenter) {
                 turnTop = true;
-            } else if (posY < 1080 / 2) {
+            } else if (posY < yCenter) {
                 turnBottom = true;
             }
 
-            robot.mouseMove(2560 / 2, 1080 / 2);
+            robot.mouseMove((int) xCenter, (int) yCenter);
         }
     }
 
