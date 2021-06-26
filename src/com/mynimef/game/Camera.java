@@ -9,7 +9,7 @@ public class Camera implements KeyListener, MouseMotionListener {
     public double xPlane, yPlane, zPlane;
 
     private boolean left, right, forward, back;
-    private boolean turnRight, turnLeft;
+    private boolean turnRight, turnLeft, turnTop, turnBottom;
     public final double MOVE_SPEED = .08;
     public final double ROTATION_SPEED = .06;
 
@@ -87,12 +87,20 @@ public class Camera implements KeyListener, MouseMotionListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         if (!pause) {
-            int pos = e.getXOnScreen();
-            if (pos > 2560 / 2) {
+            int posX = e.getXOnScreen();
+            if (posX > 2560 / 2) {
                 turnRight = true;
-            } else if (pos < 2560 / 2) {
+            } else if (posX < 2560 / 2) {
                 turnLeft = true;
             }
+
+            int posY = e.getYOnScreen();
+            if (posY > 1080 / 2) {
+                turnTop = true;
+            } else if (posY < 1080 / 2) {
+                turnBottom = true;
+            }
+
             robot.mouseMove(2560 / 2, 1080 / 2);
         }
     }
@@ -128,8 +136,7 @@ public class Camera implements KeyListener, MouseMotionListener {
             yPlane = oldxPlane*Math.sin(-ROTATION_SPEED) + yPlane*Math.cos(-ROTATION_SPEED);
 
             turnRight = false;
-        }
-        if(turnLeft) {
+        } else if(turnLeft) {
             double oldxDir=xDir;
             xDir = xDir*Math.cos(ROTATION_SPEED) - yDir*Math.sin(ROTATION_SPEED);
             yDir = oldxDir*Math.sin(ROTATION_SPEED) + yDir*Math.cos(ROTATION_SPEED);
@@ -139,6 +146,18 @@ public class Camera implements KeyListener, MouseMotionListener {
             yPlane = oldxPlane*Math.sin(ROTATION_SPEED) + yPlane*Math.cos(ROTATION_SPEED);
 
             turnLeft = false;
+        }
+
+        if(turnTop) {
+            zDir = zDir*Math.cos(-ROTATION_SPEED) - yDir*Math.sin(-ROTATION_SPEED);
+            zPlane = zPlane*Math.cos(-ROTATION_SPEED) - yPlane*Math.sin(-ROTATION_SPEED);
+
+            turnTop = false;
+        } else if(turnBottom) {
+            zDir = zDir*Math.cos(ROTATION_SPEED) - yDir*Math.sin(ROTATION_SPEED);
+            zPlane = zPlane*Math.cos(ROTATION_SPEED) - yPlane*Math.sin(ROTATION_SPEED);
+
+            turnBottom = false;
         }
     }
 

@@ -29,16 +29,20 @@ public class Screen {
             double cameraX = 2 * x / (double)(width) -1;
             double rayDirX = camera.xDir + camera.xPlane * cameraX;
             double rayDirY = camera.yDir + camera.yPlane * cameraX;
+
             //Map position
             int mapX = (int) camera.xPos;
             int mapY = (int) camera.yPos;
+
             //length of ray from current position to next x or y-side
             double sideDistX;
             double sideDistY;
+
             //Length of ray from one side to next in map
             double deltaDistX = Math.sqrt(1 + (rayDirY*rayDirY) / (rayDirX*rayDirX));
             double deltaDistY = Math.sqrt(1 + (rayDirX*rayDirX) / (rayDirY*rayDirY));
             double perpWallDist;
+
             //Direction to go in x and y
             int stepX, stepY;
             boolean hit = false;//was a wall hit
@@ -98,6 +102,7 @@ public class Screen {
             int drawEnd = lineHeight/2 + height/2;
             if(drawEnd >= height)
                 drawEnd = height - 1;
+
             //add a texture
             int texNum = map[mapX][mapY] - 1;
             double wallX;//Exact position of where wall was hit
@@ -107,6 +112,7 @@ public class Screen {
                 wallX = (camera.yPos + ((mapX - camera.xPos + (1 - stepX) / 2) / rayDirX) * rayDirY);
             }
             wallX -= Math.floor(wallX);
+
             //x coordinate on the texture
             int texX = (int)(wallX * (textures.get(texNum).SIZE));
             if(side == 0 && rayDirX > 0) texX = textures.get(texNum).SIZE - texX - 1;
