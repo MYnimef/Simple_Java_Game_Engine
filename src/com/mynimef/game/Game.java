@@ -52,7 +52,7 @@ public class Game extends JFrame implements Runnable{
         textures.add(Texture.bluestone);
         textures.add(Texture.stone);
 
-        camera = new Camera(4.5, 4.5, 1, 0, 0, -.66);
+        camera = new Camera(4.5, 4.5, 1, 0, 0, -0.9);
         screen = new Screen(map, mapWidth, mapHeight, textures, WIDTH, HEIGHT);
 
         addKeyListener(camera);

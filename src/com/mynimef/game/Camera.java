@@ -10,8 +10,7 @@ public class Camera implements KeyListener, MouseMotionListener {
 
     private boolean left, right, forward, back;
     private boolean turnRight, turnLeft, turnTop, turnBottom;
-    public final double MOVE_SPEED = .08;
-    public final double ROTATION_SPEED = .06;
+    private boolean fast = false;
 
     private Robot robot;
     private boolean pause = false;
@@ -58,6 +57,9 @@ public class Camera implements KeyListener, MouseMotionListener {
             case KeyEvent.VK_S:
                 back = true;
                 break;
+            case KeyEvent.VK_SHIFT:
+                fast = true;
+                break;
             case KeyEvent.VK_ESCAPE:
                 pause = !pause;
                 break;
@@ -80,6 +82,9 @@ public class Camera implements KeyListener, MouseMotionListener {
                 break;
             case KeyEvent.VK_S:
                 back = false;
+                break;
+            case KeyEvent.VK_SHIFT:
+                fast = false;
                 break;
             default:
                 break;
@@ -113,28 +118,46 @@ public class Camera implements KeyListener, MouseMotionListener {
     }
 
     public void update(int[][] map) {
+        double speed;
+        if(fast) {
+            speed = 0.1;
+        } else {
+            speed = 0.04;
+        }
+
         if(forward) {
-            if(map[(int)(xPos + xDir * MOVE_SPEED)][(int)yPos] == 0) {
-                xPos += xDir * MOVE_SPEED;
+            if(map[(int)(xPos + xDir * speed)][(int)yPos] == 0) {
+                xPos += xDir * speed;
             }
-            if(map[(int)xPos][(int)(yPos + yDir * MOVE_SPEED)] == 0) {
-                yPos += yDir * MOVE_SPEED;
+            if(map[(int)xPos][(int)(yPos + yDir * speed)] == 0) {
+                yPos += yDir * speed;
             }
         } else if(back) {
-            if(map[(int)(xPos - xDir * MOVE_SPEED)][(int)yPos] == 0) {
-                xPos -= xDir * MOVE_SPEED;
+            if(map[(int)(xPos - xDir * speed)][(int)yPos] == 0) {
+                xPos -= xDir * speed;
             }
-            if(map[(int)xPos][(int)(yPos - yDir * MOVE_SPEED)]== 0) {
-                yPos -= yDir * MOVE_SPEED;
+            if(map[(int)xPos][(int)(yPos - yDir * speed)]== 0) {
+                yPos -= yDir * speed;
             }
         }
 
-        /*
         if(right) {
+            if(map[(int)(xPos + yDir * speed)][(int)yPos] == 0) {
+                xPos += yDir * speed;
+            }
+            if(map[(int)xPos][(int)(yPos - xDir * speed)]== 0) {
+                yPos -= xDir * speed;
+            }
         } else if(left) {
+            if(map[(int)(xPos - yDir * speed)][(int)yPos] == 0) {
+                xPos -= yDir * speed;
+            }
+            if(map[(int)xPos][(int)(yPos + xDir * speed)]== 0) {
+                yPos += xDir * speed;
+            }
         }
-        */
 
+        double ROTATION_SPEED = .05;
         if(turnRight) {
             changeDirectionAndPlane(Math.cos(-ROTATION_SPEED), Math.sin(-ROTATION_SPEED),
                     xDir, xPlane);
@@ -147,12 +170,8 @@ public class Camera implements KeyListener, MouseMotionListener {
 
         /*
         if(turnTop) {
-            zDir = zDir*Math.cos(-ROTATION_SPEED) - yDir*Math.sin(-ROTATION_SPEED);
-            zPlane = zPlane*Math.cos(-ROTATION_SPEED) - yPlane*Math.sin(-ROTATION_SPEED);
             turnTop = false;
         } else if(turnBottom) {
-            zDir = zDir*Math.cos(ROTATION_SPEED) - yDir*Math.sin(ROTATION_SPEED);
-            zPlane = zPlane*Math.cos(ROTATION_SPEED) - yPlane*Math.sin(ROTATION_SPEED);
             turnBottom = false;
         }
         */
