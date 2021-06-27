@@ -19,28 +19,28 @@ public class Camera implements KeyListener, MouseMotionListener {
     private final double xCenter;
     private final double yCenter;
 
-    public Camera(double x, double y, double xd, double yd, double xp, double yp) {
-        xPos = x;
-        yPos = y;
-        zPos = 0;
+    public Camera(double xPos, double yPos, double xDir, double yDir, double xPlane, double yPlane) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.zPos = 0;
 
-        xDir = xd;
-        yDir = yd;
-        zDir = 0;
+        this.xDir = xDir;
+        this.yDir = yDir;
+        this.zDir = 0;
 
-        xPlane = xp;
-        yPlane = yp;
-        zPlane = 0;
+        this.xPlane = xPlane;
+        this.yPlane = yPlane;
+        this.zPlane = 0;
 
         try {
-            robot = new Robot();
+            this.robot = new Robot();
         } catch (AWTException e) {
             e.printStackTrace();
         }
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        xCenter = screenSize.getWidth() / 2;
-        yCenter = screenSize.getHeight() / 2;
+        this.xCenter = screenSize.getWidth() / 2;
+        this.yCenter = screenSize.getHeight() / 2;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class Camera implements KeyListener, MouseMotionListener {
     public void update(int[][] map) {
         if(forward) {
             if(map[(int)(xPos + xDir * MOVE_SPEED)][(int)yPos] == 0) {
-                xPos += xDir*MOVE_SPEED;
+                xPos += xDir * MOVE_SPEED;
             }
             if(map[(int)xPos][(int)(yPos + yDir * MOVE_SPEED)] == 0) {
                 yPos += yDir * MOVE_SPEED;
@@ -129,46 +129,42 @@ public class Camera implements KeyListener, MouseMotionListener {
             }
         }
 
+        /*
         if(right) {
         } else if(left) {
         }
+        */
 
         if(turnRight) {
-            double oldxDir = xDir;
-            xDir = oldxDir*Math.cos(-ROTATION_SPEED) - yDir*Math.sin(-ROTATION_SPEED);
-            yDir = oldxDir*Math.sin(-ROTATION_SPEED) + yDir*Math.cos(-ROTATION_SPEED);
-
-            double oldxPlane = xPlane;
-            xPlane = xPlane*Math.cos(-ROTATION_SPEED) - yPlane*Math.sin(-ROTATION_SPEED);
-            yPlane = oldxPlane*Math.sin(-ROTATION_SPEED) + yPlane*Math.cos(-ROTATION_SPEED);
-
+            changeDirectionAndPlane(Math.cos(-ROTATION_SPEED), Math.sin(-ROTATION_SPEED),
+                    xDir, xPlane);
             turnRight = false;
         } else if(turnLeft) {
-            double oldxDir=xDir;
-            xDir = xDir*Math.cos(ROTATION_SPEED) - yDir*Math.sin(ROTATION_SPEED);
-            yDir = oldxDir*Math.sin(ROTATION_SPEED) + yDir*Math.cos(ROTATION_SPEED);
-
-            double oldxPlane = xPlane;
-            xPlane = xPlane*Math.cos(ROTATION_SPEED) - yPlane*Math.sin(ROTATION_SPEED);
-            yPlane = oldxPlane*Math.sin(ROTATION_SPEED) + yPlane*Math.cos(ROTATION_SPEED);
-
+            changeDirectionAndPlane(Math.cos(ROTATION_SPEED), Math.sin(ROTATION_SPEED),
+                    xDir, xPlane);
             turnLeft = false;
         }
 
+        /*
         if(turnTop) {
             zDir = zDir*Math.cos(-ROTATION_SPEED) - yDir*Math.sin(-ROTATION_SPEED);
             zPlane = zPlane*Math.cos(-ROTATION_SPEED) - yPlane*Math.sin(-ROTATION_SPEED);
-
             turnTop = false;
         } else if(turnBottom) {
             zDir = zDir*Math.cos(ROTATION_SPEED) - yDir*Math.sin(ROTATION_SPEED);
             zPlane = zPlane*Math.cos(ROTATION_SPEED) - yPlane*Math.sin(ROTATION_SPEED);
-
             turnBottom = false;
         }
+        */
     }
 
-    public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
+    private void changeDirectionAndPlane(double cos, double sin, double xDir, double xPlane) {
+        this.xDir = xDir * cos - yDir * sin;
+        this.yDir = xDir * sin + yDir * cos;
+
+        this.xPlane = xPlane * cos - yPlane * sin;
+        this.yPlane = xPlane * sin + yPlane * cos;
     }
+
+    public void keyTyped(KeyEvent arg0) {}
 }
