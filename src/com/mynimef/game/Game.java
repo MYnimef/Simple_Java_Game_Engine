@@ -8,7 +8,7 @@ import java.io.Serial;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
-public class Game extends JFrame implements Runnable{
+public class Game extends JFrame implements Runnable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -77,10 +77,12 @@ public class Game extends JFrame implements Runnable{
 
     public void render() {
         BufferStrategy bs = getBufferStrategy();
+
         if(bs == null) {
             createBufferStrategy(3);
             return;
         }
+
         Graphics g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
         bs.show();
@@ -92,16 +94,18 @@ public class Game extends JFrame implements Runnable{
         double delta = 0;
         requestFocus();
 
-        while(true) {
+        while (true) {
             long now = System.nanoTime();
             delta = delta + ((now - lastTime) / ns);
             lastTime = now;
+
             while (delta >= 1) {
                 //handles all of the logic restricted time
                 screen.update(camera, pixels);
                 camera.update(map);
                 delta--;
             }
+
             render();//displays to the screen unrestricted time
         }
     }
